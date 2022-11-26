@@ -1,57 +1,60 @@
 package hr.ferit.kristinadudjak.mycloset
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import hr.ferit.kristinadudjak.mycloset.ui.theme.MyClosetTheme
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.firebase.auth.FirebaseAuth
+import hr.ferit.kristinadudjak.mycloset.ui.AppActivity
 
 class MainActivity : ComponentActivity() {
+    private val signInLauncher = registerForActivityResult(
+        FirebaseAuthUIActivityResultContract()
+    ) { res ->
+        this.onSignInResult(res)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            MyClosetTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                        Greeting("Android")
-                        Text(text = "blab")
-                        Button(onClick = {}) {
-                            Text(text = "blab")
-                        }
-                        TextButton(onClick = { /*TODO*/ }) {
-                            Text(
-                                text = "blub",
-                                color = MaterialTheme.colors.error,
-                                style = MaterialTheme.typography.h3
-                            )
-                        }
-                    }
-                }
+        val auth = FirebaseAuth.getInstance()
+        if (auth.currentUser != null) onSignInSuccess()
+        else startSignIn()
+    }
+
+    private fun startSignIn() {
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build()
+        )
+
+        // Create and launch sign-in intent
+        val signInIntent = AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            .build()
+        signInLauncher.launch(signInIntent)
+    }
+
+    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+        val response = result.idpResponse
+        if (result.resultCode == RESULT_OK) {
+            onSignInSuccess()
+        } else {
+            if (response?.error != null) {
+                startSignIn()
+            } else {
+                println(response?.error?.message)
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MyClosetTheme {
-        Greeting("Android")
+    private fun onSignInSuccess() {
+        startActivity(
+            Intent(this, AppActivity::class.java)
+        )
+        finish()
     }
+
 }
