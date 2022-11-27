@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">My closet</string>
     <string name="title_activity_app">AppActivity</string>
+
+    <string name="nav_closet">Closet</string>
+    <string name="nav_combinations">Combinations</string>
+    <string name="nav_ideas">Ideas</string>
 </resources>
