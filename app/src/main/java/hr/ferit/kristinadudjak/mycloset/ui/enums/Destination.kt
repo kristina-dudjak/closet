@@ -1,4 +1,4 @@
-package hr.ferit.kristinadudjak.mycloset.ui
+package hr.ferit.kristinadudjak.mycloset.ui.enums
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
