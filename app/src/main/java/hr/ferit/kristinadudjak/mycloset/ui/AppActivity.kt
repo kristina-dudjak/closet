@@ -1,25 +1,30 @@
 package hr.ferit.kristinadudjak.mycloset.ui
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.firebase.ui.auth.AuthUI
 import dagger.hilt.android.AndroidEntryPoint
+import hr.ferit.kristinadudjak.mycloset.MainActivity
 import hr.ferit.kristinadudjak.mycloset.R
 import hr.ferit.kristinadudjak.mycloset.ui.enums.Destination
+import hr.ferit.kristinadudjak.mycloset.ui.enums.navigate
+import hr.ferit.kristinadudjak.mycloset.ui.theme.MyClosetTheme
 
 @AndroidEntryPoint
 class AppActivity : ComponentActivity() {
@@ -29,14 +34,15 @@ class AppActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            Content(navController)
+            MyClosetTheme {
+                Content(navController)
+            }
         }
     }
 
     @Composable
     private fun Content(navController: NavHostController) {
         var isShown by remember { mutableStateOf(false) }
-        val mContext = LocalContext.current
         Scaffold(
             topBar = {
                 TopAppBar {
@@ -50,11 +56,11 @@ class AppActivity : ComponentActivity() {
                             onDismissRequest = { isShown = false }
                         ) {
                             DropdownMenuItem(onClick = {
-                                Toast.makeText(
-                                    mContext,
-                                    "Logout",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                AuthUI.getInstance().signOut(this@AppActivity)
+                                startActivity(
+                                    Intent(this@AppActivity, MainActivity::class.java)
+                                )
+                                finish()
                             }) {
                                 Text(text = "Logout")
                             }
@@ -64,14 +70,32 @@ class AppActivity : ComponentActivity() {
             },
             bottomBar = {
                 BottomNavigation {
-                    for (destination in Destination.values()) {
+                    for (destination in Destination.mainDestinations) {
                         with(destination) {
                             BottomNavigationItem(
                                 selected = navController.currentDestination?.route == route,
                                 onClick = { navController.navigate(route) },
-                                icon = { Icon(imageVector = icon, contentDescription = null) },
-                                label = { Text(stringResource(title)) }
+                                icon = { icon?.let { Icon(imageVector = icon, contentDescription = null) } },
+                                label = { title?.let { Text(stringResource(it)) } }
                             )
+                        }
+                    }
+                }
+            },
+            floatingActionButton = {
+                when (navController.currentBackStackEntryAsState().value?.destination?.route) {
+                    Destination.Closet.route -> {
+                        FloatingActionButton(
+                            onClick = {
+                                navController.navigate(Destination.ClosetEditor)
+                            }
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = null)
+                        }
+                    }
+                    Destination.Combinations.route -> {
+                        FloatingActionButton(onClick = {}) {
+                            Icon(Icons.Default.Add, contentDescription = null)
                         }
                     }
                 }
