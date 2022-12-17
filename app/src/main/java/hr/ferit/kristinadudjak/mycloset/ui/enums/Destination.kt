@@ -7,15 +7,17 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavHostController
 import hr.ferit.kristinadudjak.mycloset.R
 import hr.ferit.kristinadudjak.mycloset.ui.closet.ClosetScreen
+import hr.ferit.kristinadudjak.mycloset.ui.closetEditor.ClosetEditorScreen
 import hr.ferit.kristinadudjak.mycloset.ui.combinations.CombinationsScreen
 import hr.ferit.kristinadudjak.mycloset.ui.ideas.IdeasScreen
 
 enum class Destination(
     val route: String,
-    @StringRes val title: Int,
-    val icon: ImageVector,
+    @StringRes val title: Int? = null,
+    val icon: ImageVector? = null,
     val screen: @Composable () -> Unit
 ) {
     Closet(
@@ -35,5 +37,20 @@ enum class Destination(
         title = R.string.nav_ideas,
         icon = Icons.Default.Lightbulb,
         screen = { IdeasScreen() }
-    )
+    ),
+    ClosetEditor(
+        route = "closetEditor",
+        screen = { ClosetEditorScreen()}
+
+    );
+
+    companion object {
+        val mainDestinations = listOf(
+            Closet, Combinations, Ideas
+        )
+    }
+}
+
+fun NavHostController.navigate(destination: Destination) {
+    navigate(destination.route)
 }
