@@ -20,20 +20,29 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.flowlayout.FlowRow
 import hr.ferit.kristinadudjak.mycloset.R
+import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
 import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesColor
+import hr.ferit.kristinadudjak.mycloset.ui.enums.Temperature
 import hr.ferit.kristinadudjak.mycloset.ui.theme.MyClosetTheme
 
 @Composable
 fun ClosetEditorScreen(viewModel: ClosetEditorViewModel = hiltViewModel()) {
     viewModel.uiState?.let {
-        Content(it, viewModel::onColorClick)
+        Content(
+            state = it,
+            onColorClick = viewModel::onColorClick,
+            onCategoryClick = viewModel::onCategoryClick,
+            onTemperatureClick = viewModel::onTemperatureClick
+        )
     }
 }
 
 @Composable
 private fun Content(
     state: ClosetEditorState,
-    onColorClick: (ClothesColor, isSelected: Boolean) -> Unit
+    onColorClick: (ClothesColor, isSelected: Boolean) -> Unit,
+    onCategoryClick: (ClothesCategory, isSelected: Boolean) -> Unit,
+    onTemperatureClick: (Temperature, isSelected: Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -59,7 +68,25 @@ private fun Content(
             }
         }
         Text("Category:")
-        Text("Season:")
+        FlowRow(mainAxisSpacing = 12.dp) {
+            for (category in ClothesCategory.values()) {
+                ClothesCategoryItem(
+                    category = category,
+                    isSelected = category in state.selectedCategories,
+                    onClick = { isSelected -> onCategoryClick(category, isSelected) }
+                )
+            }
+        }
+        Text("Temperature:")
+        FlowRow(mainAxisSpacing = 12.dp) {
+            for (temperature in Temperature.values()) {
+                ClothesTemperatureItem(
+                    temperature = temperature,
+                    isSelected = temperature in state.selectedTemperatures,
+                    onClick = { isSelected -> onTemperatureClick(temperature, isSelected) }
+                )
+            }
+        }
         Button(onClick = { }) {
             Text("Add to closet")
         }
@@ -77,9 +104,18 @@ fun PreviewClosetEditor() {
                     selectedColors = listOf(
                         ClothesColor.Blue,
                         ClothesColor.Black
+                    ),
+                    selectedCategories = listOf(
+                        ClothesCategory.Bags,
+                        ClothesCategory.Dresses
+                    ),
+                    selectedTemperatures = listOf(
+                        Temperature.Cold
                     )
                 ),
-                onColorClick = { _, _ -> }
+                onColorClick = { _, _ -> },
+                onCategoryClick = { _, _ -> },
+                onTemperatureClick = { _, _ -> }
             )
         }
     }

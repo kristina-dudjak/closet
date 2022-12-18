@@ -11,5 +11,21 @@
     <string name="color_white">White</string>
     <string name="color_black">Black</string>
 
+    <string name="category_tops">Tops</string>
+    <string name="category_pants">Pants</string>
+    <string name="category_dresses">Dresses</string>
+    <string name="category_skirts">Skirts</string>
+    <string name="category_outerwear">Outerwear</string>
+    <string name="category_shoes">Shoes</string>
+    <string name="category_bags">Bags</string>
+    <string name="category_headwear">Headwear</string>
+    <string name="category_jewelry">Jewelry</string>
+    <string name="category_other">Other</string>
+
+    <string name="temperature_freezing">Freezing</string>
+    <string name="temperature_cold">Cold</string>
+    <string name="temperature_mild">Mild</string>
+    <string name="temperature_warm">Warm</string>
+    <string name="temperature_hot">Hot</string>
 
 </resources>
