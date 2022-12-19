@@ -6,6 +6,6 @@ import hr.ferit.kristinadudjak.mycloset.ui.enums.Temperature
 
 data class ClosetEditorState(
     val selectedColors: List<ClothesColor>,
-    val selectedCategories: List<ClothesCategory>,
+    val selectedCategory: ClothesCategory,
     val selectedTemperatures: List<Temperature>
 )

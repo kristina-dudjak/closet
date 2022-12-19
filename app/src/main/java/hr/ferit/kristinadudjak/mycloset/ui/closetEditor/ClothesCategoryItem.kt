@@ -9,6 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
 
@@ -16,7 +17,7 @@ import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
 fun ClothesCategoryItem(
     category: ClothesCategory,
     isSelected: Boolean,
-    onClick: (Boolean) -> Unit
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -34,8 +35,8 @@ fun ClothesCategoryItem(
                 CircleShape
             )
             .padding(8.dp)
-            .clickable { onClick(!isSelected) }
+            .clickable(onClick = onClick)
     ) {
-        Text(text = category.name)
+        Text(text = stringResource(category.nameRes))
     }
 }

@@ -16,7 +16,7 @@ class ClosetEditorViewModel @Inject constructor() : ViewModel() {
     var uiState by mutableStateOf<ClosetEditorState?>(
         ClosetEditorState(
             selectedColors = emptyList(),
-            selectedCategories = emptyList(),
+            selectedCategory = ClothesCategory.Tops,
             selectedTemperatures = emptyList()
         )
     )
@@ -30,12 +30,9 @@ class ClosetEditorViewModel @Inject constructor() : ViewModel() {
         )
     }
 
-    fun onCategoryClick(category: ClothesCategory, isSelected: Boolean) {
+    fun onCategoryClick(category: ClothesCategory) {
         uiState = uiState?.copy(
-            selectedCategories = uiState!!.selectedCategories.run {
-                if (isSelected) plus(category)
-                else minus(category)
-            }
+            selectedCategory = category
         )
     }
 

@@ -1,20 +1,19 @@
 package hr.ferit.kristinadudjak.mycloset.ui.closetEditor
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,23 +40,33 @@ fun ClosetEditorScreen(viewModel: ClosetEditorViewModel = hiltViewModel()) {
 private fun Content(
     state: ClosetEditorState,
     onColorClick: (ClothesColor, isSelected: Boolean) -> Unit,
-    onCategoryClick: (ClothesCategory, isSelected: Boolean) -> Unit,
+    onCategoryClick: (ClothesCategory) -> Unit,
     onTemperatureClick: (Temperature, isSelected: Boolean) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(200.dp)
-                .clip(CircleShape)
-        )
-        Text("Colors:")
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(4 / 3f)
+                .padding(24.dp)
+                .border(2.dp, MaterialTheme.colors.onBackground)
+                .clickable(onClick = {}),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(R.drawable.empty_image),
+                contentDescription = null,
+                Modifier.size(40.dp),
+                contentScale = ContentScale.Crop,
+            )
+            Text(stringResource(R.string.add_image))
+        }
+        Text(stringResource(R.string.colors))
         FlowRow(mainAxisSpacing = 12.dp) {
             for (color in ClothesColor.values()) {
                 ClothesColorItem(
@@ -67,17 +76,17 @@ private fun Content(
                 )
             }
         }
-        Text("Category:")
+        Text(stringResource(R.string.categories))
         FlowRow(mainAxisSpacing = 12.dp) {
             for (category in ClothesCategory.values()) {
                 ClothesCategoryItem(
                     category = category,
-                    isSelected = category in state.selectedCategories,
-                    onClick = { isSelected -> onCategoryClick(category, isSelected) }
+                    isSelected = category == state.selectedCategory,
+                    onClick = { onCategoryClick(category) }
                 )
             }
         }
-        Text("Temperature:")
+        Text(stringResource(R.string.temperature))
         FlowRow(mainAxisSpacing = 12.dp) {
             for (temperature in Temperature.values()) {
                 ClothesTemperatureItem(
@@ -88,7 +97,7 @@ private fun Content(
             }
         }
         Button(onClick = { }) {
-            Text("Add to closet")
+            Text(stringResource(R.string.add_to_closet))
         }
 
     }
@@ -105,16 +114,14 @@ fun PreviewClosetEditor() {
                         ClothesColor.Blue,
                         ClothesColor.Black
                     ),
-                    selectedCategories = listOf(
-                        ClothesCategory.Bags,
-                        ClothesCategory.Dresses
-                    ),
+                    selectedCategory =
+                    ClothesCategory.Bags,
                     selectedTemperatures = listOf(
                         Temperature.Cold
                     )
                 ),
                 onColorClick = { _, _ -> },
-                onCategoryClick = { _, _ -> },
+                onCategoryClick = {},
                 onTemperatureClick = { _, _ -> }
             )
         }

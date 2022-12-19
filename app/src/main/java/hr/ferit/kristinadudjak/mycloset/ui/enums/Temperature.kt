@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import hr.ferit.kristinadudjak.mycloset.R
 
 enum class Temperature(
-    @StringRes val nameRes: Int? = null,
+    @StringRes val nameRes: Int,
 ) {
     Freezing(
         nameRes = R.string.temperature_freezing

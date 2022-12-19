@@ -6,11 +6,15 @@
     <string name="nav_combinations">Combinations</string>
     <string name="nav_ideas">Ideas</string>
 
+    <string name="add_image">Click to add image</string>
+
+    <string name="colors">Colors</string>
     <string name="color_red">Red</string>
     <string name="color_blue">Blue</string>
     <string name="color_white">White</string>
     <string name="color_black">Black</string>
 
+    <string name="categories">Categories</string>
     <string name="category_tops">Tops</string>
     <string name="category_pants">Pants</string>
     <string name="category_dresses">Dresses</string>
@@ -22,10 +26,13 @@
     <string name="category_jewelry">Jewelry</string>
     <string name="category_other">Other</string>
 
+    <string name="temperature">Temperature</string>
     <string name="temperature_freezing">Freezing</string>
     <string name="temperature_cold">Cold</string>
     <string name="temperature_mild">Mild</string>
     <string name="temperature_warm">Warm</string>
     <string name="temperature_hot">Hot</string>
+
+    <string name="add_to_closet">Add to closet</string>
 
 </resources>

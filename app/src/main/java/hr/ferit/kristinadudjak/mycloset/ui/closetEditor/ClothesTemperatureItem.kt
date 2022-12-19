@@ -10,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import hr.ferit.kristinadudjak.mycloset.ui.enums.Temperature
 
@@ -37,6 +38,6 @@ fun ClothesTemperatureItem(
             .padding(8.dp)
             .clickable { onClick(!isSelected) }
     ) {
-        Text(text = temperature.name)
+        Text(text = stringResource(temperature.nameRes))
     }
 }

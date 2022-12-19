@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import hr.ferit.kristinadudjak.mycloset.R
 
 enum class ClothesCategory(
-    @StringRes val nameRes: Int? = null,
+    @StringRes val nameRes: Int,
 ) {
     Tops(
         nameRes = R.string.category_tops
