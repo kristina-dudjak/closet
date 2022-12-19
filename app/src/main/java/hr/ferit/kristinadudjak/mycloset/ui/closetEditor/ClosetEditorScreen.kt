@@ -2,11 +2,14 @@ package hr.ferit.kristinadudjak.mycloset.ui.closetEditor
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -41,11 +44,17 @@ private fun Content(
     onCategoryClick: (ClothesCategory) -> Unit,
     onTemperatureClick: (Temperature, isSelected: Boolean) -> Unit
 ) {
+    val showDialog = remember { mutableStateOf(false) }
+    if (showDialog.value) {
+        AddImageDialog(setShowDialog = {
+            showDialog.value = it
+        })
+    }
     Column(
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
@@ -54,7 +63,9 @@ private fun Content(
                 .aspectRatio(4 / 3f)
                 .padding(24.dp)
                 .border(2.dp, MaterialTheme.colors.onBackground)
-                .clickable(onClick = {}),
+                .clickable(onClick = {
+                    showDialog.value = true
+                }),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -64,6 +75,7 @@ private fun Content(
                 Modifier.size(40.dp),
                 contentScale = ContentScale.Crop,
             )
+            Spacer(Modifier.size(12.dp))
             Text(stringResource(R.string.add_image))
         }
         Text(stringResource(R.string.colors))
@@ -96,7 +108,13 @@ private fun Content(
                 )
             }
         }
-        Button(onClick = { }) {
+        Button(
+            onClick = { }, shape = RoundedCornerShape(50.dp),
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxWidth()
+                .height(50.dp)
+        ) {
             Text(stringResource(R.string.add_to_closet))
         }
 

@@ -43,4 +43,8 @@
 
     <string name="add_to_closet">Add to closet</string>
 
+    <string name="take_photo">Take a photo</string>
+    <string name="from_gallery">Add image from gallery</string>
+    <string name="cancel">Cancel</string>
+
 </resources>
