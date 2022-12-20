@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.google.accompanist.flowlayout.FlowRow
 import hr.ferit.kristinadudjak.mycloset.R
 import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
@@ -30,9 +31,11 @@ fun ClosetEditorScreen(viewModel: ClosetEditorViewModel = hiltViewModel()) {
     viewModel.uiState?.let {
         Content(
             state = it,
+            onImageSelected = viewModel::onImageSelected,
             onColorClick = viewModel::onColorClick,
             onCategoryClick = viewModel::onCategoryClick,
-            onTemperatureClick = viewModel::onTemperatureClick
+            onTemperatureClick = viewModel::onTemperatureClick,
+            onSave = viewModel::onClothingSave
         )
     }
 }
@@ -40,15 +43,20 @@ fun ClosetEditorScreen(viewModel: ClosetEditorViewModel = hiltViewModel()) {
 @Composable
 private fun Content(
     state: ClosetEditorState,
+    onImageSelected: (String) -> Unit,
     onColorClick: (ClothesColor, isSelected: Boolean) -> Unit,
     onCategoryClick: (ClothesCategory) -> Unit,
-    onTemperatureClick: (Temperature, isSelected: Boolean) -> Unit
+    onTemperatureClick: (Temperature, isSelected: Boolean) -> Unit,
+    onSave: () -> Unit
 ) {
     val showDialog = remember { mutableStateOf(false) }
     if (showDialog.value) {
-        AddImageDialog(setShowDialog = {
-            showDialog.value = it
-        })
+        AddImageDialog(
+            setShowDialog = {
+                showDialog.value = it
+            },
+            onImageSelected = onImageSelected
+        )
     }
     Column(
         Modifier
@@ -69,14 +77,23 @@ private fun Content(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(R.drawable.empty_image),
-                contentDescription = null,
-                Modifier.size(40.dp),
-                contentScale = ContentScale.Crop,
-            )
-            Spacer(Modifier.size(12.dp))
-            Text(stringResource(R.string.add_image))
+            if (state.selectedImage == null) {
+                Image(
+                    painter = painterResource(R.drawable.empty_image),
+                    contentDescription = null,
+                    Modifier.size(40.dp),
+                    contentScale = ContentScale.Crop,
+                )
+                Spacer(Modifier.size(12.dp))
+                Text(stringResource(R.string.add_image))
+            } else {
+                AsyncImage(
+                    model = state.selectedImage,
+                    contentDescription = null,
+                    Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop,
+                )
+            }
         }
         Text(stringResource(R.string.colors))
         FlowRow(mainAxisSpacing = 12.dp) {
@@ -109,11 +126,12 @@ private fun Content(
             }
         }
         Button(
-            onClick = { }, shape = RoundedCornerShape(50.dp),
+            onClick = onSave, shape = RoundedCornerShape(50.dp),
             modifier = Modifier
                 .padding(20.dp)
                 .fillMaxWidth()
-                .height(50.dp)
+                .height(50.dp),
+            enabled = state.selectedImage != null
         ) {
             Text(stringResource(R.string.add_to_closet))
         }
@@ -128,6 +146,7 @@ fun PreviewClosetEditor() {
         Surface {
             Content(
                 state = ClosetEditorState(
+                    selectedImage = null,
                     selectedColors = listOf(
                         ClothesColor.Blue,
                         ClothesColor.Black
@@ -138,9 +157,11 @@ fun PreviewClosetEditor() {
                         Temperature.Cold
                     )
                 ),
+                onImageSelected = {},
                 onColorClick = { _, _ -> },
                 onCategoryClick = {},
-                onTemperatureClick = { _, _ -> }
+                onTemperatureClick = { _, _ -> },
+                onSave = {}
             )
         }
     }
