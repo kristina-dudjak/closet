@@ -3,13 +3,18 @@ package hr.ferit.kristinadudjak.mycloset
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 import hr.ferit.kristinadudjak.mycloset.ui.AppActivity
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val viewModel: MainActivityViewModel by viewModels()
+
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
     ) { res ->
@@ -19,7 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val auth = FirebaseAuth.getInstance()
-        if (auth.currentUser != null) onSignInSuccess()
+        if (auth.currentUser != null) onSignedIn()
         else startSignIn()
     }
 
@@ -29,7 +34,6 @@ class MainActivity : ComponentActivity() {
             AuthUI.IdpConfig.GoogleBuilder().build()
         )
 
-        // Create and launch sign-in intent
         val signInIntent = AuthUI.getInstance()
             .createSignInIntentBuilder()
             .setAvailableProviders(providers)
@@ -51,10 +55,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun onSignInSuccess() {
+        viewModel.saveUser()
+        onSignedIn()
+    }
+
+    private fun onSignedIn() {
         startActivity(
             Intent(this, AppActivity::class.java)
         )
         finish()
     }
-
 }

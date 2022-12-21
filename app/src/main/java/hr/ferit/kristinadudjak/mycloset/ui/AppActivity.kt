@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -18,7 +19,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.firebase.ui.auth.AuthUI
 import dagger.hilt.android.AndroidEntryPoint
 import hr.ferit.kristinadudjak.mycloset.MainActivity
 import hr.ferit.kristinadudjak.mycloset.R
@@ -28,6 +28,7 @@ import hr.ferit.kristinadudjak.mycloset.ui.theme.MyClosetTheme
 
 @AndroidEntryPoint
 class AppActivity : ComponentActivity() {
+    private val viewModel: AppActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,13 +56,15 @@ class AppActivity : ComponentActivity() {
                             expanded = isShown,
                             onDismissRequest = { isShown = false }
                         ) {
-                            DropdownMenuItem(onClick = {
-                                AuthUI.getInstance().signOut(this@AppActivity)
-                                startActivity(
-                                    Intent(this@AppActivity, MainActivity::class.java)
-                                )
-                                finish()
-                            }) {
+                            DropdownMenuItem(
+                                onClick = {
+                                    viewModel.logOutUser()
+                                    startActivity(
+                                        Intent(this@AppActivity, MainActivity::class.java)
+                                    )
+                                    finish()
+                                }
+                            ) {
                                 Text(text = "Logout")
                             }
                         }
@@ -75,7 +78,14 @@ class AppActivity : ComponentActivity() {
                             BottomNavigationItem(
                                 selected = navController.currentDestination?.route == route,
                                 onClick = { navController.navigate(route) },
-                                icon = { icon?.let { Icon(imageVector = icon, contentDescription = null) } },
+                                icon = {
+                                    icon?.let {
+                                        Icon(
+                                            imageVector = icon,
+                                            contentDescription = null
+                                        )
+                                    }
+                                },
                                 label = { title?.let { Text(stringResource(it)) } }
                             )
                         }
