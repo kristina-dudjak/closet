@@ -3,10 +3,7 @@ package hr.ferit.kristinadudjak.mycloset.ui.closetEditor
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,9 +18,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.google.accompanist.flowlayout.FlowRow
 import hr.ferit.kristinadudjak.mycloset.R
-import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
-import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesColor
-import hr.ferit.kristinadudjak.mycloset.ui.enums.Temperature
+import hr.ferit.kristinadudjak.mycloset.ui.LocalNavController
+import hr.ferit.kristinadudjak.mycloset.ui.enums.*
 import hr.ferit.kristinadudjak.mycloset.ui.theme.MyClosetTheme
 
 @Composable
@@ -50,6 +46,7 @@ private fun Content(
     onSave: () -> Unit
 ) {
     val showDialog = remember { mutableStateOf(false) }
+    val navController = LocalNavController.current
     if (showDialog.value) {
         AddImageDialog(
             setShowDialog = {
@@ -126,7 +123,11 @@ private fun Content(
             }
         }
         Button(
-            onClick = onSave, shape = RoundedCornerShape(50.dp),
+            onClick = {
+                onSave()
+                navController.navigateUp()
+            },
+            shape = RoundedCornerShape(50.dp),
             modifier = Modifier
                 .padding(20.dp)
                 .fillMaxWidth()

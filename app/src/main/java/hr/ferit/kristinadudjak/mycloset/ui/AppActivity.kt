@@ -26,6 +26,8 @@ import hr.ferit.kristinadudjak.mycloset.ui.enums.Destination
 import hr.ferit.kristinadudjak.mycloset.ui.enums.navigate
 import hr.ferit.kristinadudjak.mycloset.ui.theme.MyClosetTheme
 
+val LocalNavController = staticCompositionLocalOf<NavHostController> { error("") }
+
 @AndroidEntryPoint
 class AppActivity : ComponentActivity() {
     private val viewModel: AppActivityViewModel by viewModels()
@@ -36,7 +38,11 @@ class AppActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             MyClosetTheme {
-                Content(navController)
+                CompositionLocalProvider(
+                    LocalNavController provides navController
+                ) {
+                    Content(navController)
+                }
             }
         }
     }
