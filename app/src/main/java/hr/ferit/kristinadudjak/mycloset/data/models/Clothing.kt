@@ -5,8 +5,9 @@ import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesColor
 import hr.ferit.kristinadudjak.mycloset.ui.enums.Temperature
 
 data class Clothing(
-    val image: String,
-    val colors: List<ClothesColor>,
-    val category: ClothesCategory,
-    val temperature: List<Temperature>
+    val id: String = "",
+    val image: String = "",
+    val colors: List<ClothesColor> = emptyList(),
+    val category: ClothesCategory = ClothesCategory.Tops,
+    val temperature: List<Temperature> = emptyList()
 )
