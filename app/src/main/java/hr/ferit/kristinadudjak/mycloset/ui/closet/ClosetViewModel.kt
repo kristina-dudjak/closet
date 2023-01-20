@@ -20,9 +20,11 @@ class ClosetViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            uiState = ClosetState(
-                clothes = clothesRepository.getClothes()
-            )
+            clothesRepository.getClothes().collect {
+                uiState = ClosetState(
+                    clothes = it
+                )
+            }
         }
     }
 }
