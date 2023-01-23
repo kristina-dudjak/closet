@@ -23,7 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import hr.ferit.kristinadudjak.mycloset.MainActivity
 import hr.ferit.kristinadudjak.mycloset.R
 import hr.ferit.kristinadudjak.mycloset.ui.enums.Destination
-import hr.ferit.kristinadudjak.mycloset.ui.enums.navigate
 import hr.ferit.kristinadudjak.mycloset.ui.theme.MyClosetTheme
 
 val LocalNavController = staticCompositionLocalOf<NavHostController> { error("") }
@@ -103,7 +102,9 @@ class AppActivity : ComponentActivity() {
                     Destination.Closet.route -> {
                         FloatingActionButton(
                             onClick = {
-                                navController.navigate(Destination.ClosetEditor)
+                                navController.navigate(Destination.ClosetEditor.constructRoute(
+                                    "clothing" to "null"
+                                ))
                             }
                         ) {
                             Icon(Icons.Default.Add, contentDescription = null)
@@ -124,7 +125,7 @@ class AppActivity : ComponentActivity() {
             ) {
                 for (destination in Destination.values()) {
                     with(destination) {
-                        composable(route) { screen() }
+                        composable(route, args) { screen() }
                     }
                 }
             }

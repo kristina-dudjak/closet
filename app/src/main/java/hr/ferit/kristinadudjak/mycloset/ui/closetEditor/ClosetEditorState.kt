@@ -5,8 +5,9 @@ import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesColor
 import hr.ferit.kristinadudjak.mycloset.ui.enums.Temperature
 
 data class ClosetEditorState(
-    val selectedImage: String?,
-    val selectedColors: List<ClothesColor>,
-    val selectedCategory: ClothesCategory,
-    val selectedTemperatures: List<Temperature>
+    val id: String = "",
+    val selectedImage: String = "",
+    val selectedColors: List<ClothesColor> = emptyList(),
+    val selectedCategory: ClothesCategory = ClothesCategory.Tops,
+    val selectedTemperatures: List<Temperature > = emptyList()
 )

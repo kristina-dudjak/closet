@@ -9,4 +9,5 @@ interface ClothesRepository {
     suspend fun saveClothing(clothing: Clothing)
 
     suspend fun getClothes() : Flow<Map<ClothesCategory, List<Clothing>>>
+    suspend fun getClothing(id: String): Clothing?
 }

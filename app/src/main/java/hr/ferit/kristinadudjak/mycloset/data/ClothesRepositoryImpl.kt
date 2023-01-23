@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
 import hr.ferit.kristinadudjak.mycloset.data.models.Clothing
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import java.util.*
 import javax.inject.Inject
 
 class ClothesRepositoryImpl @Inject constructor() : ClothesRepository {
@@ -22,7 +24,8 @@ class ClothesRepositoryImpl @Inject constructor() : ClothesRepository {
 
     override suspend fun saveClothing(clothing: Clothing) {
         user?.let { user ->
-            db.collection("users/${user.uid}/closet").add(clothing).await()
+            val toSave = if (clothing.id == "") clothing.copy(id = UUID.randomUUID().toString()) else clothing
+            db.collection("users/${user.uid}/closet").add(toSave).await()
         }
     }
 
@@ -35,6 +38,13 @@ class ClothesRepositoryImpl @Inject constructor() : ClothesRepository {
                         .groupBy { it.category }
                 }
         } ?: emptyFlow()
+    }
+
+    override suspend fun getClothing(id: String): Clothing? {
+        return user?.let { user ->
+            db.collection("users/${user.uid}/closet").whereEqualTo("id", id)
+                .get().await().first().toObject()
+        }
     }
 }
 
