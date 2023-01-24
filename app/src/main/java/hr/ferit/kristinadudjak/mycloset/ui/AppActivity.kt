@@ -5,27 +5,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.navigation
 import dagger.hilt.android.AndroidEntryPoint
 import hr.ferit.kristinadudjak.mycloset.MainActivity
-import hr.ferit.kristinadudjak.mycloset.R
-import hr.ferit.kristinadudjak.mycloset.ui.enums.Destination
+import hr.ferit.kristinadudjak.mycloset.ui.closet.ClosetScreen
+import hr.ferit.kristinadudjak.mycloset.ui.closetEditor.ClothingEditorScreen
+import hr.ferit.kristinadudjak.mycloset.ui.combinations.CombinationsScreen
+import hr.ferit.kristinadudjak.mycloset.ui.ideas.IdeasScreen
 import hr.ferit.kristinadudjak.mycloset.ui.theme.MyClosetTheme
-
-val LocalNavController = staticCompositionLocalOf<NavHostController> { error("") }
 
 @AndroidEntryPoint
 class AppActivity : ComponentActivity() {
@@ -37,99 +28,63 @@ class AppActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             MyClosetTheme {
-                CompositionLocalProvider(
-                    LocalNavController provides navController
+                NavHost(
+                    navController = navController,
+                    startDestination = "closet-graph"
                 ) {
-                    Content(navController)
+                    navigation(startDestination = "closet", route = "closet-graph") {
+                        composable("closet") {
+                            ClosetScreen(
+                                onGoToClothing = { clothingId ->
+                                    navController.navigate("clothingEditor/$clothingId")
+                                },
+                                onNavigationClick = { route ->
+                                    navController.navigate(route)
+                                },
+                                onLogOutClick = { logOut() }
+                            )
+                        }
+                        composable(
+                            route = "clothingEditor/{clothingId}",
+                            arguments = listOf(
+                                navArgument("clothingId") {}
+                            )
+                        ) {
+                            ClothingEditorScreen(
+                                onSave = { navController.navigateUp() },
+                                onNavigationClick = { route ->
+                                    navController.navigate(route)
+                                },
+                                onLogOutClick = { logOut() }
+                            )
+                        }
+                    }
+
+                    navigation(
+                        startDestination = "combinations",
+                        route = "combinations-graph"
+                    ) {
+                        composable("combinations") {
+                            CombinationsScreen()
+                        }
+                    }
+
+                    navigation(startDestination = "ideas", route = "ideas-graph") {
+                        composable("ideas") {
+                            IdeasScreen()
+                        }
+                    }
                 }
             }
         }
     }
 
-    @Composable
-    private fun Content(navController: NavHostController) {
-        var isShown by remember { mutableStateOf(false) }
-        Scaffold(
-            topBar = {
-                TopAppBar {
-                    Text(stringResource(R.string.app_name), Modifier.weight(1f))
-                    Box {
-                        IconButton(onClick = { isShown = !isShown }) {
-                            Icon(Icons.Default.MoreVert, "")
-                        }
-                        DropdownMenu(
-                            expanded = isShown,
-                            onDismissRequest = { isShown = false }
-                        ) {
-                            DropdownMenuItem(
-                                onClick = {
-                                    viewModel.logOutUser()
-                                    startActivity(
-                                        Intent(this@AppActivity, MainActivity::class.java)
-                                    )
-                                    finish()
-                                }
-                            ) {
-                                Text(text = "Logout")
-                            }
-                        }
-                    }
-                }
-            },
-            bottomBar = {
-                BottomNavigation {
-                    for (destination in Destination.mainDestinations) {
-                        with(destination) {
-                            BottomNavigationItem(
-                                selected = navController.currentDestination?.route == route,
-                                onClick = { navController.navigate(route) },
-                                icon = {
-                                    icon?.let {
-                                        Icon(
-                                            imageVector = icon,
-                                            contentDescription = null
-                                        )
-                                    }
-                                },
-                                label = { title?.let { Text(stringResource(it)) } }
-                            )
-                        }
-                    }
-                }
-            },
-            floatingActionButton = {
-                when (navController.currentBackStackEntryAsState().value?.destination?.route) {
-                    Destination.Closet.route -> {
-                        FloatingActionButton(
-                            onClick = {
-                                navController.navigate(Destination.ClosetEditor.constructRoute(
-                                    "clothing" to "null"
-                                ))
-                            }
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = null)
-                        }
-                    }
-                    Destination.Combinations.route -> {
-                        FloatingActionButton(onClick = {}) {
-                            Icon(Icons.Default.Add, contentDescription = null)
-                        }
-                    }
-                }
-            }
-        ) { contentPadding ->
-            NavHost(
-                navController = navController,
-                startDestination = Destination.Closet.route,
-                Modifier.padding(contentPadding)
-            ) {
-                for (destination in Destination.values()) {
-                    with(destination) {
-                        composable(route, args) { screen() }
-                    }
-                }
-            }
-        }
+    private fun logOut() {
+        viewModel.logOutUser()
+        startActivity(
+            Intent(this@AppActivity, MainActivity::class.java)
+        )
+        finish()
     }
 }
 

@@ -21,7 +21,7 @@ class ClosetEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val clothingId: String = savedStateHandle["clothing"]!!
+    private val clothingId: String = savedStateHandle["clothingId"]!!
     var uiState by mutableStateOf(ClosetEditorState())
         private set
 

@@ -4,9 +4,12 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Checkroom
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -18,20 +21,69 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.google.accompanist.flowlayout.FlowRow
 import hr.ferit.kristinadudjak.mycloset.R
-import hr.ferit.kristinadudjak.mycloset.ui.LocalNavController
-import hr.ferit.kristinadudjak.mycloset.ui.enums.*
+import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
+import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesColor
+import hr.ferit.kristinadudjak.mycloset.ui.enums.Temperature
 import hr.ferit.kristinadudjak.mycloset.ui.theme.MyClosetTheme
 
 @Composable
-fun ClosetEditorScreen(viewModel: ClosetEditorViewModel = hiltViewModel()) {
-    viewModel.uiState?.let {
+fun ClothingEditorScreen(
+    onSave: () -> Unit,
+    onNavigationClick: (route: String) -> Unit,
+    onLogOutClick: () -> Unit,
+    viewModel: ClosetEditorViewModel = hiltViewModel()
+) {
+    var isDropdownExpanded by remember { mutableStateOf(false) }
+    Scaffold(
+        topBar = {
+            TopAppBar {
+                Text(stringResource(R.string.app_name), Modifier.weight(1f))
+                Box {
+                    IconButton(onClick = { isDropdownExpanded = !isDropdownExpanded }) {
+                        Icon(Icons.Default.MoreVert, "")
+                    }
+                    DropdownMenu(
+                        expanded = isDropdownExpanded,
+                        onDismissRequest = { isDropdownExpanded = false }
+                    ) {
+                        DropdownMenuItem(onClick = onLogOutClick) {
+                            Text(text = "Logout")
+                        }
+                    }
+                }
+            }
+        },
+        bottomBar = {
+            BottomNavigation {
+                BottomNavigationItem(
+                    selected = true,
+                    onClick = {},
+                    icon = { Icon(Icons.Default.Checkroom, contentDescription = null) },
+                    label = { Text(stringResource(R.string.nav_closet)) }
+                )
+                BottomNavigationItem(
+                    selected = false,
+                    onClick = { onNavigationClick("combinations") },
+                    icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
+                    label = { Text(stringResource(R.string.nav_combinations)) }
+                )
+                BottomNavigationItem(
+                    selected = false,
+                    onClick = { onNavigationClick("ideas") },
+                    icon = { Icon(Icons.Default.Lightbulb, contentDescription = null) },
+                    label = { Text(stringResource(R.string.nav_ideas)) }
+                )
+            }
+        }
+    ) { padding ->
         Content(
-            state = it,
+            state = viewModel.uiState,
             onImageSelected = viewModel::onImageSelected,
             onColorClick = viewModel::onColorClick,
             onCategoryClick = viewModel::onCategoryClick,
             onTemperatureClick = viewModel::onTemperatureClick,
-            onSave = viewModel::onClothingSave
+            onSave = { viewModel.onClothingSave(); onSave() },
+            Modifier.padding(padding)
         )
     }
 }
@@ -43,10 +95,10 @@ private fun Content(
     onColorClick: (ClothesColor, isSelected: Boolean) -> Unit,
     onCategoryClick: (ClothesCategory) -> Unit,
     onTemperatureClick: (Temperature, isSelected: Boolean) -> Unit,
-    onSave: () -> Unit
+    onSave: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val showDialog = remember { mutableStateOf(false) }
-    val navController = LocalNavController.current
     if (showDialog.value) {
         AddImageDialog(
             setShowDialog = {
@@ -56,7 +108,7 @@ private fun Content(
         )
     }
     Column(
-        Modifier
+        modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -74,7 +126,7 @@ private fun Content(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (state.selectedImage == null) {
+            if (state.selectedImage == "") {
                 Image(
                     painter = painterResource(R.drawable.empty_image),
                     contentDescription = null,
@@ -123,16 +175,13 @@ private fun Content(
             }
         }
         Button(
-            onClick = {
-                onSave()
-                navController.navigateUp()
-            },
+            onClick = onSave,
             shape = RoundedCornerShape(50.dp),
             modifier = Modifier
                 .padding(20.dp)
                 .fillMaxWidth()
                 .height(50.dp),
-            enabled = state.selectedImage != null
+            enabled = state.selectedImage != ""
         ) {
             Text(stringResource(R.string.add_to_closet))
         }
@@ -147,7 +196,7 @@ fun PreviewClosetEditor() {
         Surface {
             Content(
                 state = ClosetEditorState(
-                    selectedImage = null,
+                    selectedImage = "",
                     selectedColors = listOf(
                         ClothesColor.Blue,
                         ClothesColor.Black
