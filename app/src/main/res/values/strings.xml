@@ -42,6 +42,7 @@
     <string name="temperature_hot">Hot</string>
 
     <string name="add_to_closet">Add to closet</string>
+    <string name="add_clothing">Add clothing</string>
 
     <string name="take_photo">Take a photo</string>
     <string name="from_gallery">Add image from gallery</string>

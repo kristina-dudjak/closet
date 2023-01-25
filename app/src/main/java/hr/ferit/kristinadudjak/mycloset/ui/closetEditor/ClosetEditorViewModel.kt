@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hr.ferit.kristinadudjak.mycloset.data.ClothesRepository
+import hr.ferit.kristinadudjak.mycloset.data.repositories.ClothesRepository
 import hr.ferit.kristinadudjak.mycloset.data.models.Clothing
 import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
 import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesColor

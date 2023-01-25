@@ -2,7 +2,7 @@ package hr.ferit.kristinadudjak.mycloset
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hr.ferit.kristinadudjak.mycloset.data.UserRepository
+import hr.ferit.kristinadudjak.mycloset.data.repositories.UserRepository
 import javax.inject.Inject
 
 @HiltViewModel

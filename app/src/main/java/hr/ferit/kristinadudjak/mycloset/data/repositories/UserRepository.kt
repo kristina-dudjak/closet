@@ -1,4 +1,4 @@
-package hr.ferit.kristinadudjak.mycloset.data
+package hr.ferit.kristinadudjak.mycloset.data.repositories
 
 interface UserRepository {
 

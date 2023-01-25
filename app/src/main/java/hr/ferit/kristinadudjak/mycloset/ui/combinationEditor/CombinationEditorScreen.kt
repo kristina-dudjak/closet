@@ -1,26 +1,35 @@
-package hr.ferit.kristinadudjak.mycloset.ui.combinations
+package hr.ferit.kristinadudjak.mycloset.ui.combinationEditor
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Checkroom
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import hr.ferit.kristinadudjak.mycloset.R
+import hr.ferit.kristinadudjak.mycloset.ui.closet.ClosetItem
 
 @Composable
-fun CombinationsScreen(
+fun CombinationEditorScreen(
+    pickedClothing: String?,
+    onSave: () -> Unit,
     onNavigationClick: (route: String) -> Unit,
     onLogOutClick: () -> Unit,
-    onGoToCombination: (id: String?) -> Unit,
-    viewModel: CombinationsViewModel = hiltViewModel()
+    onAddClothing: () -> Unit,
+    viewModel: CombinationEditorViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(pickedClothing) {
+        pickedClothing?.let {
+            viewModel.addToCombination(it)
+        }
+    }
+
     var isDropdownExpanded by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
@@ -62,25 +71,34 @@ fun CombinationsScreen(
                     label = { Text(stringResource(R.string.nav_ideas)) }
                 )
             }
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { onGoToCombination(null) }) {
-                Icon(Icons.Default.Add, contentDescription = null)
-            }
         }
     ) { padding ->
-        Content(state = viewModel.uiState, Modifier.padding(padding))
+        Content(
+            state = viewModel.uiState,
+            onSave = { viewModel.onCombinationSave(); onSave() },
+            onAddClothing = onAddClothing,
+            Modifier.padding(padding)
+        )
     }
 }
 
-@Composable
-private fun Content(state: CombinationsState, modifier: Modifier = Modifier) {
-    LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.fillMaxHeight()) {
-        for (combination in state.combinations) {
-            item { Text(text = "new") }
 
+@Composable
+private fun Content(
+    state: CombinationEditorState,
+    onSave: () -> Unit,
+    onAddClothing: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier.verticalScroll(rememberScrollState())) {
+        for (clothing in state.clothes) {
+            ClosetItem(
+                clothing,
+                onClick = {}
+            )
+        }
+        Button(onClick = onAddClothing) {
+            Text(stringResource(R.string.add_clothing))
         }
     }
-
-
 }

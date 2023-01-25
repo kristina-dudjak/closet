@@ -1,4 +1,4 @@
-package hr.ferit.kristinadudjak.mycloset.data
+package hr.ferit.kristinadudjak.mycloset.data.repositories
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
@@ -24,8 +24,8 @@ class ClothesRepositoryImpl @Inject constructor() : ClothesRepository {
 
     override suspend fun saveClothing(clothing: Clothing) {
         user?.let { user ->
-            val toSave = if (clothing.id == "") clothing.copy(id = UUID.randomUUID().toString()) else clothing
-            db.collection("users/${user.uid}/closet").add(toSave).await()
+            val clothing = if (clothing.id == "") clothing.copy(id = UUID.randomUUID().toString()) else clothing
+            db.collection("users/${user.uid}/closet").add(clothing).await()
         }
     }
 

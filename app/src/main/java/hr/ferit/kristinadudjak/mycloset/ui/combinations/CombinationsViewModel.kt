@@ -1,4 +1,4 @@
-package hr.ferit.kristinadudjak.mycloset.ui.closet
+package hr.ferit.kristinadudjak.mycloset.ui.combinations
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -6,24 +6,22 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hr.ferit.kristinadudjak.mycloset.data.repositories.ClothesRepository
+import hr.ferit.kristinadudjak.mycloset.data.repositories.CombinationsRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ClosetViewModel @Inject constructor(
-    private val clothesRepository: ClothesRepository
+class CombinationsViewModel @Inject constructor(
+    private val combinationsRepository: CombinationsRepository
 ) : ViewModel() {
 
-    var uiState by mutableStateOf(ClosetState())
+    var uiState by mutableStateOf(CombinationsState())
         private set
 
     init {
         viewModelScope.launch {
-            clothesRepository.getClothes().collect {
-                uiState = ClosetState(
-                    clothes = it
-                )
+            combinationsRepository.getCombinations().collect {
+                uiState = CombinationsState(combinations = it)
             }
         }
     }

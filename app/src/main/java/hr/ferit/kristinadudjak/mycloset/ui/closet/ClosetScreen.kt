@@ -20,7 +20,9 @@ import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
 
 @Composable
 fun ClosetScreen(
+    isPickMode: Boolean,
     onGoToClothing: (id: String?) -> Unit,
+    onPickClothing: (id: String) -> Unit,
     onNavigationClick: (route: String) -> Unit,
     onLogOutClick: () -> Unit,
     viewModel: ClosetViewModel = hiltViewModel()
@@ -75,7 +77,9 @@ fun ClosetScreen(
     ) { padding ->
         Content(
             state = viewModel.uiState,
+            isPickMode = isPickMode,
             onGoToClothing = onGoToClothing,
+            onPickClothing = onPickClothing,
             Modifier.padding(padding)
         )
     }
@@ -84,7 +88,9 @@ fun ClosetScreen(
 @Composable
 private fun Content(
     state: ClosetState,
+    isPickMode: Boolean,
     onGoToClothing: (id: String?) -> Unit,
+    onPickClothing: (id: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expandedCategories by remember { mutableStateOf(listOf<ClothesCategory>()) }
@@ -113,7 +119,8 @@ private fun Content(
                     ClosetItem(
                         clothing,
                         onClick = {
-                            onGoToClothing(clothing.id)
+                            if (isPickMode) onPickClothing(clothing.id)
+                            else onGoToClothing(clothing.id)
                         }
                     )
                 }
