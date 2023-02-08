@@ -16,9 +16,9 @@ import hr.ferit.kristinadudjak.mycloset.R
 
 @Composable
 fun CombinationsScreen(
+    onGoToCombination: (id: String?) -> Unit,
     onNavigationClick: (route: String) -> Unit,
     onLogOutClick: () -> Unit,
-    onGoToCombination: (id: String?) -> Unit,
     viewModel: CombinationsViewModel = hiltViewModel()
 ) {
     var isDropdownExpanded by remember { mutableStateOf(false) }
@@ -69,15 +69,26 @@ fun CombinationsScreen(
             }
         }
     ) { padding ->
-        Content(state = viewModel.uiState, Modifier.padding(padding))
+        Content(
+            state = viewModel.uiState,
+            onGoToCombination = onGoToCombination,
+            Modifier.padding(padding)
+        )
     }
 }
 
 @Composable
-private fun Content(state: CombinationsState, modifier: Modifier = Modifier) {
+private fun Content(
+    state: CombinationsState,
+    onGoToCombination: (id: String?) -> Unit,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(modifier = modifier.fillMaxHeight()) {
         items(state.combinations) { combination ->
-            CombinationsItem(combination, {})
+            CombinationsItem(combination, onClick = {
+                onGoToCombination(combination.id)
+            })
+
         }
     }
 }

@@ -9,11 +9,12 @@ import hr.ferit.kristinadudjak.mycloset.data.models.Clothing
 @Composable
 fun ClosetItem(
     clothing: Clothing,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     AsyncImage(
         clothing.image,
         contentDescription = null,
-        Modifier.clickable(onClick = onClick)
+        modifier.clickable(onClick = onClick)
     )
 }

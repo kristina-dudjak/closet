@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import hr.ferit.kristinadudjak.mycloset.data.models.Clothing
 import hr.ferit.kristinadudjak.mycloset.data.models.Combination
 import hr.ferit.kristinadudjak.mycloset.data.repositories.ClothesRepository
 import hr.ferit.kristinadudjak.mycloset.data.repositories.CombinationsRepository
@@ -18,23 +19,24 @@ class CombinationEditorViewModel @Inject constructor(
     private val clothesRepository: ClothesRepository,
     private val combinationsRepository: CombinationsRepository,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
     private val combinationId: String = savedStateHandle["combinationId"]!!
     var uiState by mutableStateOf(CombinationEditorState())
         private set
 
     init {
         viewModelScope.launch {
-            uiState =  if (combinationId != "null") {
-                val combination = combinationsRepository.getCombination(combinationId)
-                combination?.let {
-                    CombinationEditorState(
-                        id = it.id,
-                        clothes = it.clothes
-                    )
-                } ?: CombinationEditorState()
+            if (combinationId != "null") {
+                combinationsRepository.getCombination(combinationId).collect { combination ->
+                    uiState = combination?.let {
+                        CombinationEditorState(
+                            id = it.id,
+                            clothes = it.clothes
+                        )
+                    } ?: CombinationEditorState()
+                }
             } else {
-                CombinationEditorState()
+                uiState = CombinationEditorState()
             }
         }
     }
@@ -59,6 +61,39 @@ class CombinationEditorViewModel @Inject constructor(
                         clothes = clothes
                     )
                 )
+            }
+        }
+    }
+
+    fun onCombinationDelete() {
+        viewModelScope.launch {
+            uiState.run {
+                combinationsRepository.deleteCombination(
+                    Combination(
+                        id = id,
+                        clothes = clothes
+                    )
+                )
+            }
+        }
+    }
+
+    fun onCombinationClothingDelete(clothing: Clothing) {
+        viewModelScope.launch {
+            uiState.run {
+                if (combinationId != "null") {
+                    combinationsRepository.deleteClothingFromCombination(
+                        Combination(
+                            id = id,
+                            clothes = clothes
+                        ),
+                        clothing
+                    )
+                } else {
+                    uiState = uiState.copy(
+                        clothes = uiState.clothes - clothing
+                    )
+                }
             }
         }
     }

@@ -43,8 +43,10 @@
 
     <string name="add_to_closet">Add to closet</string>
     <string name="remove_from_closet">Remove from closet</string>
+
     <string name="add_clothing">Add clothing</string>
     <string name="save_combination">Save combination</string>
+    <string name="remove_from_combinations">Remove from combinations</string>
 
     <string name="take_photo">Take a photo</string>
     <string name="from_gallery">Add image from gallery</string>

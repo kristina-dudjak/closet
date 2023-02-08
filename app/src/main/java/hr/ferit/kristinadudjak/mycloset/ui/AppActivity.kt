@@ -105,7 +105,9 @@ class AppActivity : ComponentActivity() {
                         ) {
                             CombinationEditorScreen(
                                 pickedClothing = pickedClothing,
+                                onPickedClothingConsumed = { pickedClothing = null},
                                 onSave = { navController.navigateUp() },
+                                onDelete = { navController.navigateUp() },
                                 onNavigationClick = { route ->
                                     navController.navigate(route)
                                 },
