@@ -100,5 +100,9 @@ private fun Content(
         Button(onClick = onAddClothing) {
             Text(stringResource(R.string.add_clothing))
         }
+
+        Button(onClick = onSave) {
+            Text(stringResource(R.string.save_combination))
+        }
     }
 }
