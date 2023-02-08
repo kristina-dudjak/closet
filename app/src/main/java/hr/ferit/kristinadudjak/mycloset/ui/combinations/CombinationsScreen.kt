@@ -2,19 +2,16 @@ package hr.ferit.kristinadudjak.mycloset.ui.combinations
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import hr.ferit.kristinadudjak.mycloset.R
 
 @Composable
@@ -78,18 +75,9 @@ fun CombinationsScreen(
 
 @Composable
 private fun Content(state: CombinationsState, modifier: Modifier = Modifier) {
-    LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.fillMaxHeight()) {
-        for (combination in state.combinations) {
-            for(clothing in combination.clothes) {
-                item {
-                    AsyncImage(model = clothing.image,
-                        contentDescription = null,
-                        Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.Crop,)
-                }
-            }
+    LazyColumn(modifier = modifier.fillMaxHeight()) {
+        items(state.combinations) { combination ->
+            CombinationsItem(combination, {})
         }
     }
-
-
 }
