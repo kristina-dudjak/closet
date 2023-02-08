@@ -42,6 +42,7 @@
     <string name="temperature_hot">Hot</string>
 
     <string name="add_to_closet">Add to closet</string>
+    <string name="remove_from_closet">Remove from closet</string>
     <string name="add_clothing">Add clothing</string>
     <string name="save_combination">Save combination</string>
 

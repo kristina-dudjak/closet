@@ -25,7 +25,13 @@ class ClothesRepositoryImpl @Inject constructor() : ClothesRepository {
     override suspend fun saveClothing(clothing: Clothing) {
         user?.let { user ->
             val clothing = if (clothing.id == "") clothing.copy(id = UUID.randomUUID().toString()) else clothing
-            db.collection("users/${user.uid}/closet").add(clothing).await()
+            db.collection("users/${user.uid}/closet").document(clothing.id).set(clothing).await()
+        }
+    }
+
+    override suspend fun deleteClothing(clothing: Clothing) {
+        user?.let { user ->
+            db.document("users/${user.uid}/closet/${clothing.id}").delete()
         }
     }
 

@@ -90,4 +90,20 @@ class ClosetEditorViewModel @Inject constructor(
             }
         }
     }
+
+    fun onClothingDelete() {
+        viewModelScope.launch {
+            uiState.run {
+                clothesRepository.deleteClothing(
+                    Clothing(
+                        id = id,
+                        image = selectedImage,
+                        colors = selectedColors,
+                        category = selectedCategory,
+                        temperature = selectedTemperatures,
+                    )
+                )
+            }
+        }
+    }
 }

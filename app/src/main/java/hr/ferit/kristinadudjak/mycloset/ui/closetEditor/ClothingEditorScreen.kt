@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -24,11 +23,11 @@ import hr.ferit.kristinadudjak.mycloset.R
 import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
 import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesColor
 import hr.ferit.kristinadudjak.mycloset.ui.enums.Temperature
-import hr.ferit.kristinadudjak.mycloset.ui.theme.MyClosetTheme
 
 @Composable
 fun ClothingEditorScreen(
     onSave: () -> Unit,
+    onDelete: () -> Unit,
     onNavigationClick: (route: String) -> Unit,
     onLogOutClick: () -> Unit,
     viewModel: ClosetEditorViewModel = hiltViewModel()
@@ -83,6 +82,7 @@ fun ClothingEditorScreen(
             onCategoryClick = viewModel::onCategoryClick,
             onTemperatureClick = viewModel::onTemperatureClick,
             onSave = { viewModel.onClothingSave(); onSave() },
+            onDelete = {viewModel.onClothingDelete(); onDelete() },
             Modifier.padding(padding)
         )
     }
@@ -96,6 +96,7 @@ private fun Content(
     onCategoryClick: (ClothesCategory) -> Unit,
     onTemperatureClick: (Temperature, isSelected: Boolean) -> Unit,
     onSave: () -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val showDialog = remember { mutableStateOf(false) }
@@ -185,34 +186,17 @@ private fun Content(
         ) {
             Text(stringResource(R.string.add_to_closet))
         }
-
-    }
-}
-
-@Preview
-@Composable
-fun PreviewClosetEditor() {
-    MyClosetTheme {
-        Surface {
-            Content(
-                state = ClosetEditorState(
-                    selectedImage = "",
-                    selectedColors = listOf(
-                        ClothesColor.Blue,
-                        ClothesColor.Black
-                    ),
-                    selectedCategory =
-                    ClothesCategory.Bags,
-                    selectedTemperatures = listOf(
-                        Temperature.Cold
-                    )
-                ),
-                onImageSelected = {},
-                onColorClick = { _, _ -> },
-                onCategoryClick = {},
-                onTemperatureClick = { _, _ -> },
-                onSave = {}
-            )
+        if(state.id != "") {
+            Button(
+                onClick = onDelete,
+                shape = RoundedCornerShape(50.dp),
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) {
+                Text(stringResource(R.string.remove_from_closet))
+            }
         }
     }
 }
