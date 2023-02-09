@@ -6,7 +6,7 @@ import hr.ferit.kristinadudjak.mycloset.R
 import hr.ferit.kristinadudjak.mycloset.ui.theme.CustomColors
 
 enum class ClothesColor(
-    @StringRes val nameRes: Int? = null,
+    @StringRes val nameRes: Int,
     val color: Color
 ) {
     Red(

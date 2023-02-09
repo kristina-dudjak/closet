@@ -40,7 +40,10 @@ class AppActivity : ComponentActivity() {
                     navController = navController,
                     startDestination = "closet-graph"
                 ) {
-                    navigation(startDestination = "closet?isPickMode={isPickMode}", route = "closet-graph") {
+                    navigation(
+                        startDestination = "closet?isPickMode={isPickMode}",
+                        route = "closet-graph"
+                    ) {
                         composable(
                             route = "closet?isPickMode={isPickMode}",
                             arguments = listOf(
@@ -51,7 +54,8 @@ class AppActivity : ComponentActivity() {
                             )
                         ) { backStackEntry ->
                             ClosetScreen(
-                                isPickMode = backStackEntry.arguments?.getBoolean("isPickMode") ?: false,
+                                isPickMode = backStackEntry.arguments?.getBoolean("isPickMode")
+                                    ?: false,
                                 onGoToClothing = { clothingId ->
                                     navController.navigate("clothingEditor/$clothingId")
                                 },
@@ -73,7 +77,7 @@ class AppActivity : ComponentActivity() {
                         ) {
                             ClothingEditorScreen(
                                 onSave = { navController.navigateUp() },
-                                onDelete = {navController.navigateUp() },
+                                onDelete = { navController.navigateUp() },
                                 onNavigationClick = { route ->
                                     navController.navigate(route)
                                 },
@@ -81,7 +85,6 @@ class AppActivity : ComponentActivity() {
                             )
                         }
                     }
-
                     navigation(
                         startDestination = "combinations",
                         route = "combinations-graph"
@@ -105,7 +108,7 @@ class AppActivity : ComponentActivity() {
                         ) {
                             CombinationEditorScreen(
                                 pickedClothing = pickedClothing,
-                                onPickedClothingConsumed = { pickedClothing = null},
+                                onPickedClothingConsumed = { pickedClothing = null },
                                 onSave = { navController.navigateUp() },
                                 onDelete = { navController.navigateUp() },
                                 onNavigationClick = { route ->
@@ -119,7 +122,12 @@ class AppActivity : ComponentActivity() {
 
                     navigation(startDestination = "ideas", route = "ideas-graph") {
                         composable("ideas") {
-                            IdeasScreen()
+                            IdeasScreen(
+                                onNavigationClick = { route ->
+                                    navController.navigate(route)
+                                },
+                                onLogOutClick = { logOut() }
+                            )
                         }
                     }
                 }

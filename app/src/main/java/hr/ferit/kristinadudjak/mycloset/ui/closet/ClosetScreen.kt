@@ -100,6 +100,7 @@ private fun Content(
             item(span = { GridItemSpan(2) }) {
                 Row(
                     Modifier
+                        .padding(vertical = 16.dp)
                         .clickable {
                             expandedCategories =
                                 if (category in expandedCategories) expandedCategories.minus(
@@ -121,7 +122,9 @@ private fun Content(
                         onClick = {
                             if (isPickMode) onPickClothing(clothing.id)
                             else onGoToClothing(clothing.id)
-                        }
+                        },
+                        Modifier
+                            .padding(16.dp)
                     )
                 }
             }
