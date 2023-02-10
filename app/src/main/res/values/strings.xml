@@ -52,4 +52,6 @@
     <string name="from_gallery">Add image from gallery</string>
     <string name="cancel">Cancel</string>
 
+    <string name="outside_temperature">Outside temperature: %s</string>
+
 </resources>

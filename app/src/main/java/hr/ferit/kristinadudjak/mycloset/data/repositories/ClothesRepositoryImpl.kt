@@ -1,6 +1,7 @@
 package hr.ferit.kristinadudjak.mycloset.data.repositories
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
@@ -8,7 +9,6 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
 import hr.ferit.kristinadudjak.mycloset.data.models.Clothing
-import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -24,7 +24,9 @@ class ClothesRepositoryImpl @Inject constructor() : ClothesRepository {
 
     override suspend fun saveClothing(clothing: Clothing) {
         user?.let { user ->
-            val clothing = if (clothing.id == "") clothing.copy(id = UUID.randomUUID().toString()) else clothing
+            val clothing = if (clothing.id == "") clothing.copy(
+                id = UUID.randomUUID().toString()
+            ) else clothing
             db.collection("users/${user.uid}/closet").document(clothing.id).set(clothing).await()
         }
     }
@@ -35,13 +37,23 @@ class ClothesRepositoryImpl @Inject constructor() : ClothesRepository {
         }
     }
 
-    override suspend fun getClothes(): Flow<Map<ClothesCategory, List<Clothing>>> {
+    override suspend fun getClothes(): Flow<List<Clothing>> {
         return user?.let { user ->
             db.collection("users/${user.uid}/closet")
                 .snapshotFlow()
                 .map { snapshot ->
-                    snapshot.toObjects<Clothing>()
-                        .groupBy { it.category }
+                    snapshot.toObjects()
+                }
+        } ?: emptyFlow()
+    }
+
+    override suspend fun getClothes(ids: List<String>): Flow<List<Clothing>> {
+        return user?.let { user ->
+            db.collection("users/${user.uid}/closet")
+                .whereIn(FieldPath.documentId(), ids)
+                .snapshotFlow()
+                .map { snapshot ->
+                    snapshot.toObjects()
                 }
         } ?: emptyFlow()
     }

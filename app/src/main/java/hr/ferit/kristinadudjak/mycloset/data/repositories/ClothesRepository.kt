@@ -1,7 +1,6 @@
 package hr.ferit.kristinadudjak.mycloset.data.repositories
 
 import hr.ferit.kristinadudjak.mycloset.data.models.Clothing
-import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
 import kotlinx.coroutines.flow.Flow
 
 interface ClothesRepository {
@@ -10,7 +9,9 @@ interface ClothesRepository {
 
     suspend fun deleteClothing(clothing: Clothing)
 
-    suspend fun getClothes(): Flow<Map<ClothesCategory, List<Clothing>>>
+    suspend fun getClothes(): Flow<List<Clothing>>
+
+    suspend fun getClothes(ids: List<String>): Flow<List<Clothing>>
 
     suspend fun getClothing(id: String): Clothing?
 }
