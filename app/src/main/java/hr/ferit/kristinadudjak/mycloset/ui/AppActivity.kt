@@ -1,9 +1,6 @@
 package hr.ferit.kristinadudjak.mycloset.ui
 
-import android.app.AlarmManager
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.*
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -37,20 +34,27 @@ class AppActivity : ComponentActivity() {
 
     private fun setNotifications() {
         val alarmManager = applicationContext.getSystemService<AlarmManager>()
-
         val channel = NotificationChannel("0", "channel", NotificationManager.IMPORTANCE_HIGH)
         channel.description = "description"
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
         val windowStartMillis = Calendar.getInstance().run {
             timeInMillis = System.currentTimeMillis()
-//            if (get(Calendar.HOUR_OF_DAY) > 22) add(Calendar.DAY_OF_YEAR, 1)
-            set(Calendar.HOUR_OF_DAY, 7)
+            if (get(Calendar.HOUR_OF_DAY) >= 8) add(Calendar.DAY_OF_YEAR, 1)
+            set(Calendar.HOUR_OF_DAY, 8)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             timeInMillis
         }
         val windowLengthMillis = 60000L
+
+        val intent = Intent(this, AppActivity::class.java)
+        val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            addNextIntentWithParentStack(intent)
+            getPendingIntent(0,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        }
+
         val onAlarm = AlarmManager.OnAlarmListener {
             val notification = Notification.Builder(
                 applicationContext,
@@ -58,8 +62,9 @@ class AppActivity : ComponentActivity() {
             )
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("My closet")
-                .setContentText("Check out your recommended combinations for today!")
+                .setContentText("Check out recommended combinations for today!")
                 .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
                 .build()
             notificationManager.notify(0, notification)
             setNotifications()
