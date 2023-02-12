@@ -2,6 +2,7 @@ package hr.ferit.kristinadudjak.mycloset.ui.combinations
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,8 +10,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import hr.ferit.kristinadudjak.mycloset.R
 
@@ -83,12 +87,21 @@ private fun Content(
     onGoToCombination: (id: String?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier.fillMaxHeight()) {
-        items(state.combinations) { combination ->
-            CombinationsItem(combination, onClick = {
-                onGoToCombination(combination.id)
-            })
-
+    if (state.combinations.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(
+                stringResource(R.string.empty_combinations),
+                modifier.padding(4.dp),
+                textAlign = TextAlign.Center,
+            )
+        }
+    } else {
+        LazyColumn(modifier = modifier.fillMaxHeight()) {
+            items(state.combinations) { combination ->
+                CombinationsItem(combination, onClick = {
+                    onGoToCombination(combination.id)
+                })
+            }
         }
     }
 }

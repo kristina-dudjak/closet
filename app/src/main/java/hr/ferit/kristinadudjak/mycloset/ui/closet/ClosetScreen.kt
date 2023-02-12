@@ -11,8 +11,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import hr.ferit.kristinadudjak.mycloset.R
@@ -95,37 +97,47 @@ private fun Content(
 ) {
     var expandedCategories by remember { mutableStateOf(listOf<ClothesCategory>()) }
 
-    LazyVerticalGrid(columns = GridCells.Fixed(2), modifier.fillMaxHeight()) {
-        for (category in state.clothes.keys) {
-            item(span = { GridItemSpan(2) }) {
-                Row(
-                    Modifier
-                        .padding(vertical = 16.dp)
-                        .clickable {
-                            expandedCategories =
-                                if (category in expandedCategories) expandedCategories.minus(
-                                    category
-                                )
-                                else expandedCategories.plus(category)
-                        }
-                        .padding(horizontal = 8.dp, vertical = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(stringResource(category.nameRes))
-                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                }
-            }
-            items(state.clothes[category] ?: emptyList()) { clothing ->
-                AnimatedVisibility(category in expandedCategories) {
-                    ClosetItem(
-                        clothing,
-                        onClick = {
-                            if (isPickMode) onPickClothing(clothing.id)
-                            else onGoToClothing(clothing.id)
-                        },
+    if (state.clothes.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(
+                stringResource(R.string.empty_closet),
+                modifier.padding(4.dp),
+                textAlign = TextAlign.Center,
+            )
+        }
+    } else {
+        LazyVerticalGrid(columns = GridCells.Fixed(2), modifier.fillMaxHeight()) {
+            for (category in state.clothes.keys) {
+                item(span = { GridItemSpan(2) }) {
+                    Row(
                         Modifier
-                            .padding(16.dp)
-                    )
+                            .padding(vertical = 16.dp)
+                            .clickable {
+                                expandedCategories =
+                                    if (category in expandedCategories) expandedCategories.minus(
+                                        category
+                                    )
+                                    else expandedCategories.plus(category)
+                            }
+                            .padding(horizontal = 8.dp, vertical = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(stringResource(category.nameRes))
+                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                    }
+                }
+                items(state.clothes[category] ?: emptyList()) { clothing ->
+                    AnimatedVisibility(category in expandedCategories) {
+                        ClosetItem(
+                            clothing,
+                            onClick = {
+                                if (isPickMode) onPickClothing(clothing.id)
+                                else onGoToClothing(clothing.id)
+                            },
+                            Modifier
+                                .padding(16.dp)
+                        )
+                    }
                 }
             }
         }

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,9 +16,12 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.location.LocationServices
@@ -109,7 +113,13 @@ fun IdeasScreen(
         if (hasLocationPermission == true) {
             Content(viewModel.uiState, Modifier.padding(padding))
         } else {
-            Text("no permission")
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    stringResource(R.string.no_permission),
+                    Modifier.padding(4.dp),
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }
@@ -121,7 +131,10 @@ private fun Content(
 ) {
     LazyColumn(modifier) {
         item {
-            Text(stringResource(R.string.outside_temperature, state.temperature))
+            Text(
+                stringResource(R.string.outside_temperature, state.temperature),
+                modifier.padding(20.dp)
+            )
         }
         items(state.combinations) { combination ->
             CombinationsItem(

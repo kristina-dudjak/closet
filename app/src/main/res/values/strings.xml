@@ -52,6 +52,12 @@
     <string name="from_gallery">Add image from gallery</string>
     <string name="cancel">Cancel</string>
 
+    <string name="empty_closet">You don\'t have any clothes in your closet yet.</string>
+    <string name="empty_combinations">You don\'t have any combinations yet.</string>
+    <string name="empty_combination">Click to add an item from the closet.</string>
+
+    <string name="no_permission">No location permission allowed to show recommended combinations.</string>
+
     <string name="outside_temperature">Outside temperature: %s</string>
 
 </resources>

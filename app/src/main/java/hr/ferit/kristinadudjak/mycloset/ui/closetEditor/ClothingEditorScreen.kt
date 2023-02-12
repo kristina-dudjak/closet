@@ -23,6 +23,7 @@ import hr.ferit.kristinadudjak.mycloset.R
 import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesCategory
 import hr.ferit.kristinadudjak.mycloset.ui.enums.ClothesColor
 import hr.ferit.kristinadudjak.mycloset.ui.enums.Temperature
+import hr.ferit.kristinadudjak.mycloset.ui.theme.Purple200
 
 @Composable
 fun ClothingEditorScreen(
@@ -82,7 +83,7 @@ fun ClothingEditorScreen(
             onCategoryClick = viewModel::onCategoryClick,
             onTemperatureClick = viewModel::onTemperatureClick,
             onSave = { viewModel.onClothingSave(); onSave() },
-            onDelete = {viewModel.onClothingDelete(); onDelete() },
+            onDelete = { viewModel.onClothingDelete(); onDelete() },
             Modifier.padding(padding)
         )
     }
@@ -117,8 +118,6 @@ private fun Content(
     ) {
         Column(
             Modifier
-                .fillMaxWidth()
-                .aspectRatio(4 / 3f)
                 .padding(24.dp)
                 .border(2.dp, MaterialTheme.colors.onBackground)
                 .clickable(onClick = {
@@ -128,20 +127,26 @@ private fun Content(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (state.selectedImage == "") {
-                Image(
-                    painter = painterResource(R.drawable.empty_image),
-                    contentDescription = null,
-                    Modifier.size(40.dp),
-                    contentScale = ContentScale.Crop,
-                )
-                Spacer(Modifier.size(12.dp))
-                Text(stringResource(R.string.add_image))
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(4 / 3f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+
+                    ) {
+                    Image(
+                        painter = painterResource(R.drawable.empty_image),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                    )
+                    Spacer(Modifier.size(12.dp))
+                    Text(stringResource(R.string.add_image))
+                }
             } else {
                 AsyncImage(
                     model = state.selectedImage,
                     contentDescription = null,
-                    Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.Crop,
                 )
             }
         }
@@ -186,14 +191,15 @@ private fun Content(
         ) {
             Text(stringResource(R.string.add_to_closet))
         }
-        if(state.id != "") {
+        if (state.id != "") {
             Button(
                 onClick = onDelete,
                 shape = RoundedCornerShape(50.dp),
                 modifier = Modifier
                     .padding(20.dp)
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Purple200.copy(alpha = 0.3f))
             ) {
                 Text(stringResource(R.string.remove_from_closet))
             }

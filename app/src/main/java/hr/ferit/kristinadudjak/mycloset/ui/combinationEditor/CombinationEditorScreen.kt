@@ -17,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import hr.ferit.kristinadudjak.mycloset.R
 import hr.ferit.kristinadudjak.mycloset.data.models.Clothing
 import hr.ferit.kristinadudjak.mycloset.ui.closet.ClosetItem
+import hr.ferit.kristinadudjak.mycloset.ui.theme.Purple200
 
 @Composable
 fun CombinationEditorScreen(
@@ -100,74 +101,96 @@ private fun Content(
     onAddClothing: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    Column(
-        modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    if (
+        state.clothes.isEmpty()
     ) {
-        for (clothing in state.clothes) {
-            Surface(
-                Modifier.padding(16.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colors.onBackground.copy(alpha = 0.5f)),
-                shape = RoundedCornerShape(8.dp),
-                elevation = 8.dp
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(stringResource(R.string.empty_combination))
+            IconButton(
+                onClick = onAddClothing
             ) {
-                Column() {
-                    IconButton(
-                        onClick = { onDeleteFromCombination(clothing) },
-                        Modifier.align(Alignment.End)
-                    ) {
-                        Icon(
-                            Icons.Default.Delete,
-                            "",
-                        )
-                    }
-                    ClosetItem(
-                        clothing,
-                        onClick = {},
-                        Modifier
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp)
-                    )
-                }
-
+                Icon(
+                    Icons.Default.Add,
+                    "",
+                )
             }
         }
-        IconButton(
-            onClick = onAddClothing
+    } else {
+        Column(
+            modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Icon(
-                Icons.Default.Add,
-                "",
-            )
-        }
-
-        Button(
-            onClick = onSave,
-            Modifier
-                .padding(top = 20.dp)
-                .padding(bottom = 16.dp),
-            enabled = state.clothes.isNotEmpty()
-        ) {
-            Text(stringResource(R.string.save_combination))
-        }
-        if (state.id != "") {
+            for (clothing in state.clothes) {
+                Surface(
+                    Modifier.padding(16.dp),
+                    border = BorderStroke(
+                        1.dp,
+                        MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    elevation = 8.dp
+                ) {
+                    Column() {
+                        IconButton(
+                            onClick = { onDeleteFromCombination(clothing) },
+                            Modifier.align(Alignment.End)
+                        ) {
+                            Icon(
+                                Icons.Default.Delete,
+                                "",
+                            )
+                        }
+                        ClosetItem(
+                            clothing,
+                            onClick = {},
+                            Modifier
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 16.dp)
+                        )
+                    }
+                }
+            }
+            IconButton(
+                onClick = onAddClothing,
+                Modifier.padding(4.dp)
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    "",
+                )
+            }
             Button(
-                onClick = onDelete,
+                onClick = onSave,
                 shape = RoundedCornerShape(50.dp),
                 modifier = Modifier
                     .padding(20.dp)
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .height(50.dp),
+                enabled = state.clothes.isNotEmpty()
             ) {
-                Text(stringResource(R.string.remove_from_combinations))
+                Text(stringResource(R.string.save_combination))
+            }
+            if (state.id != "") {
+                Button(
+                    onClick = onDelete,
+                    shape = RoundedCornerShape(50.dp),
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Purple200.copy(alpha = 0.3f))
+                ) {
+                    Text(stringResource(R.string.remove_from_combinations))
+                }
             }
         }
-
     }
-
-
 }
